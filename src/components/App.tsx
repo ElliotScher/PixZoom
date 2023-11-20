@@ -1,10 +1,14 @@
 import '../App.css'
+import FileExplorer from './FileExplorer'
 
-function App() {
+export default function App() {
   return (
     <>
+      <FileExplorer
+        onImageUpload={function (file: File): void {
+          console.log(file)
+        }}
+      />
     </>
   )
 }
-
-export default App
