@@ -1,14 +1,10 @@
 import '../App.css'
-import FileExplorer from './FileExplorer'
+import Gallery from './Gallery'
 
 export default function App() {
   return (
     <>
-      <FileExplorer
-        onImageUpload={function (file: File): void {
-          console.log(file)
-        }}
-      />
+      <Gallery></Gallery>
     </>
   )
 }
