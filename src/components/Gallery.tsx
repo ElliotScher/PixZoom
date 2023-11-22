@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import FileExplorer from './FileExplorer'
 import '../css/Gallery.css'
+import Image from './Image'
 
 export default function Gallery() {
   const [selectedFiles, setSelectedFiles] = useState<{ name: string; file: File }[]>([])
@@ -14,16 +15,24 @@ export default function Gallery() {
     console.log('Selected File:', file.name)
   }
 
+  function handleClear() {
+    // 👇️ open file input box on click of another element
+    setSelectedFiles([])
+  }
+
   return (
     <div className='gallery-container'>
       <FileExplorer onImageUpload={handleSelectFiles} />
       <ul className='image-list'>
         {selectedFiles.map((selectedFile, index) => (
           <li key={index}>
-            <img src={URL.createObjectURL(selectedFile.file)} alt={selectedFile.name} className='image-thumbnail' />
+            <Image name={selectedFile.name} file={selectedFile.file} />
           </li>
         ))}
       </ul>
+      <button style={{ cursor: 'pointer' }} onClick={handleClear}>
+        Clear
+      </button>
     </div>
   )
 }

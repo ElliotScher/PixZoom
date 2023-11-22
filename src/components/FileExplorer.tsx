@@ -30,7 +30,7 @@ export default function FileExplorer({ onImageUpload }: { onImageUpload: (file: 
       <input style={{ display: 'none' }} ref={inputRef} type='file' onChange={handleFileChange} accept='image/*' />
 
       <button style={{ cursor: 'pointer' }} onClick={handleClick}>
-        Open file upload box
+        Open File
       </button>
     </div>
   )
