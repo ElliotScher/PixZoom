@@ -1,0 +1,44 @@
+.gallery-thumbnail-wrapper {
+  position: relative;
+}
+
+.gallery-thumbnail-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9); /* Adjust the background color and transparency as needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2; /* Ensure the menu is above other elements */
+}
+
+.gallery-thumbnail-menu-button {
+  margin-bottom: 5px;
+}
+
+.gallery-thumbnail-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.gallery-thumbnail-dots {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.gallery-thumbnail-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: #000000;
+}
