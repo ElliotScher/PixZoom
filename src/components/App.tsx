@@ -4,9 +4,9 @@ import Gallery from './Gallery'
 
 export default function App() {
   return (
-    <div className="app-container">
+    <div className='app-container'>
       <Gallery />
       <Canvas />
     </div>
-  );
+  )
 }
