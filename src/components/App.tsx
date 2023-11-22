@@ -1,10 +1,12 @@
 import '../css/App.css'
+import Canvas from './Canvas'
 import Gallery from './Gallery'
 
 export default function App() {
   return (
-    <>
-      <Gallery></Gallery>
-    </>
-  )
+    <div className="app-container">
+      <Gallery />
+      <Canvas />
+    </div>
+  );
 }

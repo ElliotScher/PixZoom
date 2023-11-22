@@ -1,22 +1,22 @@
 .gallery-container {
-  position: fixed;
+  position: flex;
   top: 0;
   left: 0;
   bottom: 0;
-  width: 200px; /* Adjust the width as needed */
-  overflow-y: auto; /* Add scrollbar if content overflows */
-  padding: 20px; /* Optional padding */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional box shadow */
+  width: 200px;
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .image-thumbnail {
-  width: 200px; /* Set the desired width */
-  height: auto; /* Maintain aspect ratio */
-  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  width: 200px;
+  height: auto;
+  border: 1px solid #ccc;
 }
 
 .image-list {
-  list-style: none; /* Remove bullet points */
+  list-style: none;
   padding: 0;
-  text-align: center; /* Center the images within the list */
+  text-align: center;
 }

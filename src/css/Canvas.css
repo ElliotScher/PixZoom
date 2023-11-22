@@ -1,0 +1,15 @@
+.canvas-container {
+  flex: 1;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+  
+  .canvas-placeholder {
+    text-align: center;
+  }
+  

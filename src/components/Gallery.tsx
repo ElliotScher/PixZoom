@@ -25,7 +25,6 @@ export default function Gallery() {
       }
     }
     setSelectedFiles(updatedImages)
-
   }
 
   function handleTransfer() {}
