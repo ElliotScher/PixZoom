@@ -3,7 +3,7 @@ import FileExplorer from './FileExplorer'
 import '../css/Gallery.css'
 import GalleryThumbnail from './GalleryThumbnail'
 
-export default function Gallery() {
+export default function Gallery({ onTransfer }: { onTransfer: (file: File) => void }) {
   const [selectedFiles, setSelectedFiles] = useState<{ name: string; file: File }[]>([])
 
   function handleSelectFiles(file: File) {
@@ -27,8 +27,6 @@ export default function Gallery() {
     setSelectedFiles(updatedImages)
   }
 
-  function handleTransfer() {}
-
   return (
     <div className='gallery-container'>
       <FileExplorer onImageUpload={handleSelectFiles} />
@@ -42,7 +40,7 @@ export default function Gallery() {
                 file: selectedFile.file
               }}
               onDelete={() => handleDelete(index)}
-              onTransfer={handleTransfer}
+              onTransfer={() => onTransfer(selectedFile.file)}
             />
           </li>
         ))}

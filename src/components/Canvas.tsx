@@ -1,10 +1,8 @@
-import '../css/Canvas.css'
-
-export default function Canvas() {
+export default function Canvas({ primaryImage }: { primaryImage: File | null }) {
   return (
     <>
       <div className={'canvas-container'}>
-        <p className='canvas-placeholder'>Canvas Component</p>
+        {primaryImage && <img src={URL.createObjectURL(primaryImage)} alt={`Edited: ${primaryImage.name}`} />}
       </div>
     </>
   )

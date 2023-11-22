@@ -34,7 +34,7 @@ export default function GalleryThumbnail({
   }
 
   function handleCanvasTransfer() {
-    onTransfer
+    onTransfer()
     setShowMenu(false)
   }
 
