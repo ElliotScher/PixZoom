@@ -4,10 +4,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   width: 100%;
   height: 100%;
+  padding: 50px;
 }
 
-.canvas-placeholder {
-  text-align: center;
+.canvas-container .canvas-image {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.canvas-container button {
+  margin-top: 10px;
 }

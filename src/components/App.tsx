@@ -10,10 +10,14 @@ export default function App() {
     setCanvasImage(file)
   }
 
+  function handleClear() {
+    setCanvasImage(null)
+  }
+
   return (
     <div className='app-container'>
       <Gallery onTransfer={handleTransfer} />
-      <Canvas primaryImage={canvasImage} />
+      <Canvas primaryImage={canvasImage} onClear={handleClear} />
     </div>
   )
 }
