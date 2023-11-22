@@ -4,7 +4,6 @@ export default function FileExplorer({ onImageUpload }: { onImageUpload: (file: 
   const inputRef = useRef<HTMLInputElement>(null)
 
   function handleClick() {
-    // 👇️ open file input box on click of another element
     if (inputRef.current) {
       inputRef.current.click()
     }
@@ -16,12 +15,10 @@ export default function FileExplorer({ onImageUpload }: { onImageUpload: (file: 
       return
     }
 
-    // Reset file input
     if (inputRef.current) {
       inputRef.current.value = ''
     }
 
-    // Pass the file to the parent component for further processing
     onImageUpload(fileObj)
   }
 
