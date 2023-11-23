@@ -39,8 +39,8 @@ function createWindow() {
   }
 }
 
-ipcMain.handle('test', async (_event, args) => {
-  return await args
+ipcMain.handle('sent-image', (event, image) => {
+  event.sender.send('update-canvas', image)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

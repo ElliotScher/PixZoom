@@ -5,11 +5,15 @@ import '../css/ImageMenu.css'
 export default function GalleryThumbnail({
   file,
   onDelete,
-  onTransfer
+  onTransfer,
+  onDragStart,
+  onDragOver
 }: {
   file: { index: number; name: string; file: File }
   onDelete: (index: number) => void
   onTransfer: () => void
+  onDragStart: (event: React.DragEvent<HTMLDivElement>) => void
+  onDragOver: (event: React.DragEvent<HTMLDivElement>) => void
 }) {
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
@@ -43,10 +47,19 @@ export default function GalleryThumbnail({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [])
+  }, [menuRef])
 
   return (
-    <div className='gallery-thumbnail-wrapper' ref={menuRef}>
+    <div
+      className='gallery-thumbnail-wrapper'
+      ref={menuRef}
+      draggable={true}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={(event) => {
+        event.preventDefault()
+      }}
+    >
       <Image name={file.name} file={file.file} />
 
       {showMenu && (
