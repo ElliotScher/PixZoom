@@ -3,11 +3,7 @@ import FileExplorer from './FileExplorer'
 import '../css/Gallery.css'
 import GalleryThumbnail from './GalleryThumbnail'
 
-export default function Gallery({
-  onTransfer,
-}: {
-  onTransfer: (file: File) => void
-}) {
+export default function Gallery({ onTransfer }: { onTransfer: (file: File) => void }) {
   const [selectedFiles, setSelectedFiles] = useState<{ name: string; file: File }[]>([])
   const [draggedImage, setDraggedImage] = useState<{ name: string; file: File } | null>(null)
 
@@ -33,28 +29,27 @@ export default function Gallery({
   }
 
   function handleDragStart(index: number, event: React.DragEvent<HTMLDivElement>) {
-    const draggedImage = selectedFiles[index];
-    event.dataTransfer.setData('text/plain', draggedImage.name);
-    setDraggedImage(draggedImage);
+    const draggedImage = selectedFiles[index]
+    event.dataTransfer.setData('text/plain', draggedImage.name)
+    setDraggedImage(draggedImage)
   }
-  
+
   function handleDragOver(index: number, event: React.DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-  
+    event.preventDefault()
+
     if (draggedImage) {
-      const draggedIndex = selectedFiles.indexOf(draggedImage);
-      const newOrder = [...selectedFiles];
-      newOrder.splice(draggedIndex, 1);
-      newOrder.splice(index, 0, draggedImage);
+      const draggedIndex = selectedFiles.indexOf(draggedImage)
+      const newOrder = [...selectedFiles]
+      newOrder.splice(draggedIndex, 1)
+      newOrder.splice(index, 0, draggedImage)
       setSelectedFiles(newOrder)
     }
   }
-  
+
   function handleDrop(event: React.DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    setDraggedImage(null);
+    event.preventDefault()
+    setDraggedImage(null)
   }
-  
 
   return (
     <div className='gallery-container' onDrop={(event) => handleDrop(event)}>
