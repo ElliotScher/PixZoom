@@ -46,13 +46,13 @@ export default function Gallery({ onTransfer }: { onTransfer: (file: File) => vo
     }
   }
 
-  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
+  function handleDrop(event: React.DragEvent<HTMLElement>) {
     event.preventDefault()
     setDraggedImage(null)
   }
 
   return (
-    <div className='gallery-container' onDrop={(event) => handleDrop(event)}>
+    <div className='gallery-container' onDrop={(event) => handleDrop(event)} onDragOver={(event) => event.preventDefault()}>
       <FileExplorer onImageUpload={handleSelectFiles} />
       <ul className='image-list'>
         {selectedFiles.map((selectedFile, index) => (

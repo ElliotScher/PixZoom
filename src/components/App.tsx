@@ -15,7 +15,7 @@ export default function App() {
   }
 
   return (
-    <div className='app-container'>
+    <div className='app-container' onDrop={() => handleTransfer}>
       <Gallery onTransfer={handleTransfer} />
       <Canvas primaryImage={canvasImage} onClear={handleClear} />
     </div>

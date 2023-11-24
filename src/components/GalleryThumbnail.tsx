@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import Image from './Image'
 import '../css/ImageMenu.css'
 
 export default function GalleryThumbnail({
@@ -60,7 +59,7 @@ export default function GalleryThumbnail({
         event.preventDefault()
       }}
     >
-      <Image name={file.name} file={file.file} />
+      <img src={URL.createObjectURL(file.file)} className='image-thumbnail' />
 
       {showMenu && (
         <div className='gallery-thumbnail-menu' onClick={handleMenuClick}>
