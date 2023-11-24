@@ -1,23 +1,25 @@
 class ImageLayer {
   id: number
-  image: HTMLImageElement
+  image: File
 
-  constructor(id: number, image: HTMLImageElement) {
+  constructor(id: number, image: File) {
     this.id = id
     this.image = image
   }
 }
 
 export default class CanvasImage {
-  baseImage: HTMLImageElement
+  baseImage: File
   layers: ImageLayer[]
+  name: string
 
-  constructor(baseImage: HTMLImageElement) {
+  constructor(baseImage: File, name: string) {
     this.baseImage = baseImage
     this.layers = [new ImageLayer(0, baseImage)]
+    this.name = name
   }
 
-  addLayer(image: HTMLImageElement): void {
+  addLayer(image: File): void {
     const newLayer = new ImageLayer(this.layers.length, image)
     this.layers.push(newLayer)
   }
@@ -26,10 +28,19 @@ export default class CanvasImage {
     this.layers = [this.layers[0]]
   }
 
-  getTopLayer(): ImageLayer | null {
-    if (this.layers.length > 0) {
-      return this.layers[this.layers.length - 1]
-    }
-    return null
+  getTopLayer(): File {
+    return this.layers[this.layers.length - 1].image
+  }
+
+  getBaseLayer(): File {
+    return this.baseImage
+  }
+
+  getNthLayer(N: number): File {
+    return this.layers[N].image
+  }
+
+  getAllLayers(): ImageLayer[] {
+    return this.layers
   }
 }
