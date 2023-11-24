@@ -2,12 +2,13 @@ import { useState } from 'react'
 import '../css/App.css'
 import Canvas from './Canvas'
 import Gallery from './Gallery'
+import CanvasImage from '@/classes/Image'
 
 export default function App() {
-  const [canvasImage, setCanvasImage] = useState<File | null>(null)
+  const [canvasImage, setCanvasImage] = useState<CanvasImage | null>(null)
 
-  function handleTransfer(file: File) {
-    setCanvasImage(file)
+  function handleTransfer(image: CanvasImage) {
+    setCanvasImage(image)
   }
 
   function handleClear() {

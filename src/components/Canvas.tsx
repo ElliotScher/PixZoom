@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import '../css/Canvas.css'
+import CanvasImage from '@/classes/Image';
 
-export default function Canvas({ primaryImage, onClear }: { primaryImage: File | null; onClear: () => void }) {
+export default function Canvas({ primaryImage, onClear }: { primaryImage: CanvasImage | null; onClear: () => void }) {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -25,7 +26,7 @@ export default function Canvas({ primaryImage, onClear }: { primaryImage: File |
   return (
     <>
       <div ref={containerRef} className={'canvas-container'} style={containerStyle}>
-        {primaryImage && <img src={URL.createObjectURL(primaryImage)} alt={`Edited: ${primaryImage.name}`} className='canvas-image' />}
+        {primaryImage && <img src={URL.createObjectURL(primaryImage.getTopLayer())} alt={`Edited: ${primaryImage.name}`} className='canvas-image' />}
         <button onClick={() => onClear()}>Clear Image</button>
         <button>Save Image</button>
       </div>

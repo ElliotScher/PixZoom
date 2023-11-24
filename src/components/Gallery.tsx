@@ -2,34 +2,36 @@ import { useState } from 'react'
 import FileExplorer from './FileExplorer'
 import '../css/Gallery.css'
 import GalleryThumbnail from './GalleryThumbnail'
+import CanvasImage from '@/classes/Image'
 
-export default function Gallery({ onTransfer }: { onTransfer: (file: File) => void }) {
-  const [selectedFiles, setSelectedFiles] = useState<{ name: string; file: File }[]>([])
-  const [draggedImage, setDraggedImage] = useState<{ name: string; file: File } | null>(null)
+export default function Gallery({ onTransfer }: { onTransfer: (image: CanvasImage) => void }) {
+  const [selectedImages, setSelectedImages] = useState<{ name: string; image: CanvasImage }[]>([])
+  const [draggedImage, setDraggedImage] = useState<{ name: string; image: CanvasImage } | null>(null)
 
   function handleSelectFiles(file: File) {
-    setSelectedFiles([...selectedFiles, { name: file.name, file }])
+    const image = new CanvasImage(file, file.name)
+    setSelectedImages([...selectedImages, { name: image.name, image: image }])
   }
 
   function handleClear() {
-    setSelectedFiles([])
+    setSelectedImages([])
   }
 
   function handleDelete(index: number) {
     console.log(index)
     const updatedImages = []
-    for (var i = 0; i < selectedFiles.length; i++) {
+    for (var i = 0; i < selectedImages.length; i++) {
       if (i == index) {
         continue
       } else {
-        updatedImages.push(selectedFiles[i])
+        updatedImages.push(selectedImages[i])
       }
     }
-    setSelectedFiles(updatedImages)
+    setSelectedImages(updatedImages)
   }
 
   function handleDragStart(index: number, event: React.DragEvent<HTMLDivElement>) {
-    const draggedImage = selectedFiles[index]
+    const draggedImage = selectedImages[index]
     event.dataTransfer.setData('text/plain', draggedImage.name)
     setDraggedImage(draggedImage)
   }
@@ -38,11 +40,11 @@ export default function Gallery({ onTransfer }: { onTransfer: (file: File) => vo
     event.preventDefault()
 
     if (draggedImage) {
-      const draggedIndex = selectedFiles.indexOf(draggedImage)
-      const newOrder = [...selectedFiles]
+      const draggedIndex = selectedImages.indexOf(draggedImage)
+      const newOrder = [...selectedImages]
       newOrder.splice(draggedIndex, 1)
       newOrder.splice(index, 0, draggedImage)
-      setSelectedFiles(newOrder)
+      setSelectedImages(newOrder)
     }
   }
 
@@ -55,16 +57,16 @@ export default function Gallery({ onTransfer }: { onTransfer: (file: File) => vo
     <div className='gallery-container' onDrop={(event) => handleDrop(event)} onDragOver={(event) => event.preventDefault()}>
       <FileExplorer onImageUpload={handleSelectFiles} />
       <ul className='image-list'>
-        {selectedFiles.map((selectedFile, index) => (
+        {selectedImages.map((selectedImage, index) => (
           <li key={index}>
             <GalleryThumbnail
               file={{
                 index: index,
-                name: selectedFile.name,
-                file: selectedFile.file
+                name: selectedImage.name,
+                file: selectedImage.image.getBaseLayer()
               }}
               onDelete={() => handleDelete(index)}
-              onTransfer={() => onTransfer(selectedFile.file)}
+              onTransfer={() => onTransfer(selectedImage.image)}
               onDragStart={(event) => handleDragStart(index, event)}
               onDragOver={(event) => handleDragOver(index, event)}
             />
