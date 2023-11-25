@@ -49,22 +49,23 @@ function createWindow() {
           if (win) {
             const result = dialog.showOpenDialog(win, {
               properties: ['openFile'],
-              filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif'] }],
-            });
-          
+              filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif'] }]
+            })
+
             if (!(await result).canceled && (await result).filePaths.length > 0) {
-              const filePath = (await result).filePaths[0];
-          
+              const filePath = (await result).filePaths[0]
+
               fs.readFile(filePath, (err, data) => {
                 if (err) {
-                  console.error('Error reading file:', err);
-                  return;
+                  console.error('Error reading file:', err)
+                  return
                 }
-          
-                const content = data.toString('base64'); // Convert buffer to base64
-                win?.webContents.send('upload-image', { filePath, content });
-              });
-          }}
+
+                const content = data.toString('base64') // Convert buffer to base64
+                win?.webContents.send('upload-image', { filePath, content })
+              })
+            }
+          }
         }
       },
       {
