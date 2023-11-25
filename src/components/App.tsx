@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import '../css/App.css'
+import { useEffect, useState } from 'react'
+import '@/css/App.css'
 import Canvas from './Canvas'
 import Gallery from './Gallery'
 import CanvasImage from '@/classes/Image'
@@ -11,14 +11,21 @@ export default function App() {
     setCanvasImage(image)
   }
 
-  function handleClear() {
-    setCanvasImage(null)
-  }
+  useEffect(() => {
+    window.ipcRenderer.on('clear-canvas', () => {
+      canvasImage?.revert()
+      setCanvasImage(null)
+    })
+
+    return () => {
+      window.ipcRenderer.removeAllListeners('clear-canvas')
+    }
+  }, [])
 
   return (
-    <div className='app-container' onDrop={() => handleTransfer}>
+    <div className='app-container'>
       <Gallery onTransfer={handleTransfer} />
-      <Canvas primaryImage={canvasImage} onClear={handleClear} />
+      <Canvas primaryImage={canvasImage} />
     </div>
   )
 }

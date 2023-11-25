@@ -1,5 +1,6 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, Menu, MenuItemConstructorOptions } from 'electron'
 import path from 'node:path'
+import fs from 'fs'
 
 // The built directory structure
 //
@@ -37,11 +38,66 @@ function createWindow() {
     // win.loadFile('dist/index.html')
     win.loadFile(path.join(process.env.DIST, 'index.html'))
   }
-}
 
-ipcMain.handle('sent-image', (event, image) => {
-  event.sender.send('update-canvas', image)
-})
+  // Create a new menu for the "Canvas" options
+  const file: MenuItemConstructorOptions = {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Upload Image',
+        click: async () => {
+          if (win) {
+            const result = dialog.showOpenDialog(win, {
+              properties: ['openFile'],
+              filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif'] }],
+            });
+          
+            if (!(await result).canceled && (await result).filePaths.length > 0) {
+              const filePath = (await result).filePaths[0];
+          
+              fs.readFile(filePath, (err, data) => {
+                if (err) {
+                  console.error('Error reading file:', err);
+                  return;
+                }
+          
+                const content = data.toString('base64'); // Convert buffer to base64
+                win?.webContents.send('upload-image', { filePath, content });
+              });
+          }}
+        }
+      },
+      {
+        label: 'Clear Gallery',
+        click: () => {
+          win?.webContents.send('clear-gallery')
+        }
+      },
+      { type: 'separator' },
+      {
+        label: 'Save Image',
+        click: () => {
+          win?.webContents.send('save-image')
+        }
+      },
+      {
+        label: 'Clear Canvas',
+        click: () => {
+          win?.webContents.send('clear-canvas')
+        }
+      },
+      { type: 'separator' },
+      {
+        label: 'Toggle Developer Tools',
+        click: () => {
+          win?.webContents.toggleDevTools()
+        }
+      }
+    ]
+  }
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate([file]))
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

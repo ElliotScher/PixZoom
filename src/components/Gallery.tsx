@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import FileExplorer from './FileExplorer'
-import '../css/Gallery.css'
+import { useEffect, useState } from 'react'
+import '@/css/Gallery.css'
 import GalleryThumbnail from './GalleryThumbnail'
 import CanvasImage from '@/classes/Image'
 
@@ -8,13 +7,48 @@ export default function Gallery({ onTransfer }: { onTransfer: (image: CanvasImag
   const [selectedImages, setSelectedImages] = useState<{ name: string; image: CanvasImage }[]>([])
   const [draggedImage, setDraggedImage] = useState<{ name: string; image: CanvasImage } | null>(null)
 
+  useEffect(() => {
+    // Listen for a response from the main process
+    window.ipcRenderer.on('upload-image', (_event, { filePath, content }) => {
+      if (filePath && content) {
+        try {
+          const decodedContent = atob(content)
+          const uint8Array = new Uint8Array(decodedContent.length)
+
+          for (let i = 0; i < decodedContent.length; i++) {
+            uint8Array[i] = decodedContent.charCodeAt(i)
+          }
+
+          const blob = new Blob([uint8Array], { type: 'image/png' })
+          const file = new File([blob], filePath, { type: blob.type })
+
+          handleSelectFiles(file)
+        } catch (error) {
+          console.error('Error creating File:', error)
+        }
+      }
+    })
+
+    return () => {
+      window.ipcRenderer.removeAllListeners('upload-image')
+    }
+  }, [selectedImages])
+
+  useEffect(() => {
+    window.ipcRenderer.on('clear-gallery', clearGallery)
+
+    return () => {
+      window.ipcRenderer.removeAllListeners('clear-gallery')
+    }
+  })
+
+  function clearGallery() {
+    setSelectedImages([])
+  }
+
   function handleSelectFiles(file: File) {
     const image = new CanvasImage(file, file.name)
     setSelectedImages([...selectedImages, { name: image.name, image: image }])
-  }
-
-  function handleClear() {
-    setSelectedImages([])
   }
 
   function handleDelete(index: number) {
@@ -55,7 +89,6 @@ export default function Gallery({ onTransfer }: { onTransfer: (image: CanvasImag
 
   return (
     <div className='gallery-container' onDrop={(event) => handleDrop(event)} onDragOver={(event) => event.preventDefault()}>
-      <FileExplorer onImageUpload={handleSelectFiles} />
       <ul className='image-list'>
         {selectedImages.map((selectedImage, index) => (
           <li key={index}>
@@ -73,9 +106,6 @@ export default function Gallery({ onTransfer }: { onTransfer: (image: CanvasImag
           </li>
         ))}
       </ul>
-      <button style={{ cursor: 'pointer' }} onClick={handleClear}>
-        Clear
-      </button>
     </div>
   )
 }

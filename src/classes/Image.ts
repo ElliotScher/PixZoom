@@ -43,4 +43,36 @@ export default class CanvasImage {
   getAllLayers(): ImageLayer[] {
     return this.layers
   }
+
+  revert() {
+    this.layers = this.layers.splice(0, 1)
+  }
+
+  async getTopLayerDimensions(): Promise<{ width: number; height: number }> {
+    return await getImageDimensions(this.layers[this.layers.length - 1].image)
+  }
+
+  async getBaseLayerDimensions(): Promise<{ width: number; height: number }> {
+    return await getImageDimensions(this.baseImage)
+  }
+
+  async getNthLayerDimensions(N: number): Promise<{ width: number; height: number }> {
+    return await getImageDimensions(this.layers[N].image)
+  }
+
+  async getAllLayersDimensions(): Promise<Array<{ width: number; height: number }>> {
+    const dimensionsPromises = this.layers.map((layer) => getImageDimensions(layer.image))
+    return await Promise.all(dimensionsPromises)
+  }
+}
+
+async function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => {
+      resolve({ width: image.width, height: image.height })
+    }
+    image.onerror = reject
+    image.src = URL.createObjectURL(file) as string
+  })
 }

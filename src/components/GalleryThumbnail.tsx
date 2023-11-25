@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import '../css/ImageMenu.css'
+import '@/css/ImageMenu.css'
 
 export default function GalleryThumbnail({
   file,

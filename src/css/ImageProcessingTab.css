@@ -1,0 +1,21 @@
+/* Canvas.css */
+.canvas-container {
+  position: relative;
+}
+
+.image-processing-tab {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 10px; /* Adjust the left position as needed */
+  top: 50%; /* Adjust the top position as needed */
+  transform: translateY(-50%);
+}
+
+.image-processing-tab button {
+  margin-bottom: 10px; /* Adjust the margin as needed */
+}
+
+.image-processing-tab button.selected {
+  background-color: #dddddd89; /* Adjust the background color for selected button */
+}
