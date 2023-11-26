@@ -15,9 +15,9 @@
 .image-processing-tab button {
   margin-bottom: 10px; /* Adjust the margin as needed */
   color: var(--text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image-processing-tab button.selected {
