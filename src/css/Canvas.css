@@ -17,4 +17,5 @@
 
 .canvas-container button {
   margin-top: 10px;
+  background-color: var(--button-color);
 }

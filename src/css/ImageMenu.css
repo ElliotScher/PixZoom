@@ -16,15 +16,17 @@
   z-index: 2;
 }
 
-.gallery-thumbnail-menu-button {
+.gallery-thumbnail-menu button {
   margin-bottom: 5px;
+  background-color: var(--button-color);
+  color: var(--text);
 }
 
 .gallery-thumbnail-button {
   position: absolute;
   top: 5px;
   right: 5px;
-  background-color: white;
+  background-color: var(--white);
   border: none;
   cursor: pointer;
   z-index: 2;
@@ -40,5 +42,5 @@
   position: absolute;
   width: 5px;
   height: 5px;
-  background-color: #000000;
+  background-color: var(--black);
 }
