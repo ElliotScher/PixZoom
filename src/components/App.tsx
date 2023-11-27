@@ -13,7 +13,7 @@ export default function App() {
 
   useEffect(() => {
     window.ipcRenderer.on('clear-canvas', () => {
-      canvasImage?.revert()
+      canvasImage?.clearLayers()
       setCanvasImage(null)
     })
 

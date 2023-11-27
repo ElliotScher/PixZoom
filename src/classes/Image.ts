@@ -44,10 +44,6 @@ export default class CanvasImage {
     return this.layers
   }
 
-  revert() {
-    this.layers = this.layers.splice(0, 1)
-  }
-
   async getTopLayerDimensions(): Promise<{ width: number; height: number }> {
     return await getImageDimensions(this.layers[this.layers.length - 1].image)
   }
