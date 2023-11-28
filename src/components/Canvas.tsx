@@ -31,8 +31,6 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
     if (primaryImage) {
       const croppedFile = await cropImage(primaryImage.getTopLayer(), cropDimensions)
       primaryImage.addLayer(croppedFile)
-
-      // After adding the layer, trigger a re-render
       rerender(!render)
     }
   }
