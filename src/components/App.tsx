@@ -20,7 +20,7 @@ export default function App() {
     return () => {
       window.ipcRenderer.removeAllListeners('clear-canvas')
     }
-  }, [])
+  }, [canvasImage])
 
   return (
     <div className='app-container'>

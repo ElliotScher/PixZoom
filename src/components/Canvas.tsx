@@ -5,6 +5,7 @@ import ImageProcessingTab from './ImageProcessingTab'
 
 export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | null }) {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
+  const [render, rerender] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -24,9 +25,22 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
     width: `${windowWidth}px`
   }
 
+  async function handleCrop() {
+    const cropDimensions = { x: 0, y: 0, width: 100, height: 100 };
+  
+    if (primaryImage) {
+      const croppedFile = await cropImage(primaryImage.getTopLayer(), cropDimensions);
+      primaryImage.addLayer(croppedFile);
+  
+      // After adding the layer, trigger a re-render
+      rerender(!render);
+    }
+  }
+  
+
   function handleProcessingFunction(func: string | null) {
     if (func === 'crop') {
-      console.log('put cropping logic here')
+      handleCrop()
     }
     if (func === 'rotate') {
       console.log('put rotating logic here')
@@ -58,4 +72,31 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
       </div>
     </>
   )
+}
+
+
+ export async function cropImage(image: File, cropDimensions: { x: number; y: number; width: number; height: number }): Promise<File> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error('Canvas context not supported');
+      }
+
+      const { x, y, width, height } = cropDimensions;
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const croppedFile = new File([blob], 'cropped.png', { type: 'image/png' });
+          resolve(croppedFile);
+        }
+      }, 'image/png');
+    };
+    img.src = URL.createObjectURL(image);
+  });
 }
