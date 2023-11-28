@@ -8,7 +8,7 @@ export default function ImageProcessingTab({ onSelectFunction }: { onSelectFunct
   const imageSize = 40
 
   function handleFunctionClick(functionName: string) {
-    setSelectedFunction((prevFunction) => (prevFunction === functionName ? null : functionName))
+    setSelectedFunction(functionName)
     onSelectFunction(functionName)
   }
 

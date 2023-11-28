@@ -20,10 +20,6 @@
   justify-content: center;
 }
 
-.image-processing-tab button.selected {
-  background-color: var(--selected-button-color); /* Adjust the background color for selected button */
-}
-
 .image-processing-tab button:hover {
   outline: none;
 }

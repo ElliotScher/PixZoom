@@ -6,9 +6,12 @@ import CanvasImage from '@/classes/Image'
 
 export default function App() {
   const [canvasImage, setCanvasImage] = useState<CanvasImage | null>(null)
+  const [render, rerender] = useState(false)
 
   function handleTransfer(image: CanvasImage) {
+    image.clearLayers()
     setCanvasImage(image)
+    rerender(!render)
   }
 
   useEffect(() => {
