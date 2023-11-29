@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import '@/css/CropOverlay.css'
 
-export default function CropOverlay({ onRemove }: {onRemove: () => void}) {
+export default function CropOverlay({ onRemove }: { onRemove: () => void }) {
   const overlayRef = useRef<HTMLDivElement | null>(null)
 
   function handleClick() {
