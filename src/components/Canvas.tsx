@@ -9,35 +9,35 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
   const [render, rerender] = useState(false)
   const [isCropping, setIsCropping] = useState(false)
   const [imageStart, setImageStart] = useState<{ top: number; left: number } | null>(null)
-  const [containerRect, setContainerRect] = useState<DOMRect | null>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  function updateLayout() {
+    setWindowWidth(window.innerWidth);
+
+    const containerElement = containerRef.current;
+    const imageElement = imageRef.current;
+
+    if (containerElement && imageElement) {
+      const containerRect = containerElement.getBoundingClientRect();
+      const imageRect = imageElement.getBoundingClientRect();
+
+      const top = imageRect.top - containerRect.top;
+      const left = imageRect.left - containerRect.left;
+
+      setImageStart({ top, left });
+    }
+  };
+
   useEffect(() => {
-    function handleResize() {
-      setWindowWidth(window.innerWidth)
-      if (containerRef.current) {
-        setContainerRect(containerRef.current.getBoundingClientRect())
-      }
-    }
+      updateLayout();
 
-    function getPosition() {
-      const imageElement = imageRef.current
-      if (imageElement && containerRect) {
-        const top = imageStart ? imageElement.getBoundingClientRect().top - containerRect.top : 0
-        const left = imageStart ? imageElement.getBoundingClientRect().left - containerRect.left : 0
-        setImageStart({ top, left })
-      }
-    }
-    handleResize()
-    getPosition()
-
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', updateLayout);
 
     return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [primaryImage, containerRect])
+      window.removeEventListener('resize', updateLayout);
+    };
+  }, [primaryImage]);
 
   const containerStyle = {
     width: `${windowWidth}px`
