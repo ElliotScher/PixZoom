@@ -7,21 +7,37 @@ import CropOverlay from './CropOverlay'
 export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | null }) {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
   const [render, rerender] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
   const [isCropping, setIsCropping] = useState(false)
+  const [imageStart, setImageStart] = useState<{ top: number; left: number } | null>(null)
+  const [containerRect, setContainerRect] = useState<DOMRect | null>(null)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleResize = () => {
+    function handleResize() {
       setWindowWidth(window.innerWidth)
+      if (containerRef.current) {
+        setContainerRect(containerRef.current.getBoundingClientRect())
+      }
+    }
+
+    function getPosition() {
+      const imageElement = imageRef.current
+      if (imageElement && containerRect) {
+        const top = imageStart ? imageElement.getBoundingClientRect().top - containerRect.top : 0
+        const left = imageStart ? imageElement.getBoundingClientRect().left - containerRect.left : 0
+        setImageStart({ top, left })
+      }
     }
     handleResize()
+    getPosition()
 
     window.addEventListener('resize', handleResize)
 
     return () => {
       window.removeEventListener('resize', handleResize)
     }
-  }, [primaryImage])
+  }, [primaryImage, containerRect])
 
   const containerStyle = {
     width: `${windowWidth}px`
@@ -66,9 +82,25 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
       <div ref={containerRef} className={'canvas-container'} style={containerStyle}>
         <ImageProcessingTab onSelectFunction={handleProcessingFunction} />
         {primaryImage && (
-          <img src={URL.createObjectURL(primaryImage.getTopLayer())} alt={`Edited: ${primaryImage.name}`} className='canvas-image' />
+          <img
+            ref={imageRef}
+            src={URL.createObjectURL(primaryImage.getTopLayer())}
+            alt={`Edited: ${primaryImage.name}`}
+            className='canvas-image'
+          />
         )}
-        {isCropping && primaryImage && <CropOverlay onRemove={() => setIsCropping(false)} />}
+        {isCropping && primaryImage && <CropOverlay start={imageStart} onCrop={handleCrop} onRemove={() => setIsCropping(false)} />}
+        {/* {imageStart && containerRect && <div
+        style={{
+          position: 'absolute',
+          top: imageStart.top,
+          left: imageStart.left,
+          width: '10px',
+          height: '10px',
+          background: 'red',
+          borderRadius: '50%',
+        }}
+      />} */}
       </div>
     </>
   )

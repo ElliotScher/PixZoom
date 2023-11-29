@@ -21,3 +21,10 @@
   justify-content: center;
   align-items: center;
 }
+
+.crop-region {
+  position: absolute;
+  border: 2px dashed #fff; /* You can customize the border style */
+  pointer-events: none; /* Ensure the crop region does not interfere with mouse events on underlying elements */
+  background-color: rgba(0, 0, 0, 0);
+}

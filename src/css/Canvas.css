@@ -21,3 +21,10 @@
   margin-top: 10px;
   background-color: var(--button-color);
 }
+
+.red-dot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
