@@ -33,7 +33,6 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
       primaryImage.addLayer(croppedFile)
       rerender(!render)
     }
-    setIsCropping(false)
   }
 
   function handleProcessingFunction(func: string | null) {
@@ -69,7 +68,7 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
         {primaryImage && (
           <img src={URL.createObjectURL(primaryImage.getTopLayer())} alt={`Edited: ${primaryImage.name}`} className='canvas-image' />
         )}
-        {isCropping && primaryImage && <CropOverlay />}
+        {isCropping && primaryImage && <CropOverlay onRemove={() => setIsCropping(false)} />}
       </div>
     </>
   )
