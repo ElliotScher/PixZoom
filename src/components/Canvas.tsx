@@ -12,32 +12,41 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
   const imageRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  function updateLayout() {
-    setWindowWidth(window.innerWidth);
-
-    const containerElement = containerRef.current;
-    const imageElement = imageRef.current;
-
-    if (containerElement && imageElement) {
-      const containerRect = containerElement.getBoundingClientRect();
-      const imageRect = imageElement.getBoundingClientRect();
-
-      const top = imageRect.top - containerRect.top;
-      const left = imageRect.left - containerRect.left;
-
-      setImageStart({ top, left });
-    }
-  };
-
   useEffect(() => {
-      updateLayout();
+    let animationFrameId: number
 
-    window.addEventListener('resize', updateLayout);
+    function updateLayout() {
+      setWindowWidth(window.innerWidth)
 
+      const containerElement = containerRef.current
+      const imageElement = imageRef.current
+
+      if (containerElement && imageElement) {
+        const containerRect = containerElement.getBoundingClientRect()
+        const imageRect = imageElement.getBoundingClientRect()
+
+        const top = imageRect.top - containerRect.top
+        const left = imageRect.left - containerRect.left
+
+        setImageStart({ top, left })
+      }
+
+      // Request the next animation frame for continuous updates
+      animationFrameId = window.requestAnimationFrame(updateLayout)
+    }
+
+    // Initial layout update
+    updateLayout()
+
+    // Set up the event listener for window resize
+    window.addEventListener('resize', updateLayout)
+
+    // Clean up event listener and cancel animation frame on component unmount
     return () => {
-      window.removeEventListener('resize', updateLayout);
-    };
-  }, [primaryImage]);
+      window.removeEventListener('resize', updateLayout)
+      window.cancelAnimationFrame(animationFrameId)
+    }
+  }, [primaryImage])
 
   const containerStyle = {
     width: `${windowWidth}px`
@@ -90,17 +99,19 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
           />
         )}
         {isCropping && primaryImage && <CropOverlay start={imageStart} onCrop={handleCrop} onRemove={() => setIsCropping(false)} />}
-        {/* {imageStart && containerRect && <div
-        style={{
-          position: 'absolute',
-          top: imageStart.top,
-          left: imageStart.left,
-          width: '10px',
-          height: '10px',
-          background: 'red',
-          borderRadius: '50%',
-        }}
-      />} */}
+        {imageStart && (
+          <div
+            style={{
+              position: 'absolute',
+              top: imageStart.top,
+              left: imageStart.left,
+              width: '10px',
+              height: '10px',
+              background: 'red',
+              borderRadius: '50%'
+            }}
+          />
+        )}
       </div>
     </>
   )
