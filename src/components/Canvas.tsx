@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import '@/css/Canvas.css'
 import CanvasImage from '@/classes/Image'
 import ImageProcessingTab from './ImageProcessingTab'
+import CropOverlay from './CropOverlay'
 
 export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | null }) {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
   const [render, rerender] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isCropping, setIsCropping] = useState(false)
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,37 +27,38 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
     width: `${windowWidth}px`
   }
 
-  async function handleCrop() {
-    const cropDimensions = { x: 0, y: 0, width: 100, height: 100 }
-
+  async function handleCrop(cropDimensions: { x: number; y: number; width: number; height: number }) {
     if (primaryImage) {
       const croppedFile = await cropImage(primaryImage.getTopLayer(), cropDimensions)
       primaryImage.addLayer(croppedFile)
       rerender(!render)
     }
+    setIsCropping(false)
   }
 
   function handleProcessingFunction(func: string | null) {
-    if (func === 'crop') {
-      handleCrop()
-    }
-    if (func === 'rotate') {
-      console.log('put rotating logic here')
-    }
-    if (func === 'resize') {
-      console.log('put resizing logic here')
-    }
-    if (func === 'brightness') {
-      console.log('put brightness logic here')
-    }
-    if (func === 'saturation') {
-      console.log('put saturation logic here')
-    }
-    if (func === 'contrast') {
-      console.log('put contrast logic here')
-    }
-    if (func === 'greyscale') {
-      console.log('put greyscale logic here')
+    if (primaryImage) {
+      if (func === 'crop') {
+        setIsCropping(true)
+      }
+      if (func === 'rotate') {
+        console.log('put rotating logic here')
+      }
+      if (func === 'resize') {
+        console.log('put resizing logic here')
+      }
+      if (func === 'brightness') {
+        console.log('put brightness logic here')
+      }
+      if (func === 'saturation') {
+        console.log('put saturation logic here')
+      }
+      if (func === 'contrast') {
+        console.log('put contrast logic here')
+      }
+      if (func === 'greyscale') {
+        console.log('put greyscale logic here')
+      }
     }
   }
 
@@ -66,6 +69,7 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
         {primaryImage && (
           <img src={URL.createObjectURL(primaryImage.getTopLayer())} alt={`Edited: ${primaryImage.name}`} className='canvas-image' />
         )}
+        {isCropping && primaryImage && <CropOverlay />}
       </div>
     </>
   )
