@@ -8,7 +8,7 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
   const [render, rerender] = useState(false)
   const [isCropping, setIsCropping] = useState(false)
-  const [imageStart, setImageStart] = useState<{ top: number; left: number } | null>(null)
+  const [rectangle, setRectangle] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -27,8 +27,10 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
 
         const top = imageRect.top - containerRect.top
         const left = imageRect.left - containerRect.left
+        const width = imageRect.width
+        const height = imageRect.height
 
-        setImageStart({ top, left })
+        setRectangle({ top, left, width, height })
       }
 
       // Request the next animation frame for continuous updates
@@ -98,16 +100,29 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
             className='canvas-image'
           />
         )}
-        {isCropping && primaryImage && <CropOverlay start={imageStart} onCrop={handleCrop} onRemove={() => setIsCropping(false)} />}
-        {imageStart && (
+        {isCropping && primaryImage && <CropOverlay rectangle={rectangle} onCrop={handleCrop} onRemove={() => setIsCropping(false)} />}
+        {rectangle && (
           <div
             style={{
               position: 'absolute',
-              top: imageStart.top,
-              left: imageStart.left,
+              top: rectangle.top,
+              left: rectangle.left,
               width: '10px',
               height: '10px',
               background: 'red',
+              borderRadius: '50%'
+            }}
+          />
+        )}
+        {rectangle && (
+          <div
+            style={{
+              position: 'absolute',
+              top: rectangle.top + rectangle.height,
+              left: rectangle.left + rectangle.width,
+              width: '10px',
+              height: '10px',
+              background: 'green',
               borderRadius: '50%'
             }}
           />
@@ -130,6 +145,7 @@ export async function cropImage(image: File, cropDimensions: { x: number; y: num
       const { x, y, width, height } = cropDimensions
       canvas.width = width
       canvas.height = height
+      console.log(cropDimensions)
       ctx.drawImage(img, x, y, width, height, 0, 0, width, height)
 
       canvas.toBlob((blob) => {

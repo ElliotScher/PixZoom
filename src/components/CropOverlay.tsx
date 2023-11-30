@@ -2,11 +2,11 @@ import { useRef, useState } from 'react'
 import '@/css/CropOverlay.css'
 
 export default function CropOverlay({
-  start,
+  rectangle,
   onCrop,
   onRemove
 }: {
-  start: { top: number; left: number } | null
+  rectangle: { top: number; left: number; width: number; height: number } | null
   onCrop: (cropDimensions: { x: number; y: number; width: number; height: number }) => void
   onRemove: () => void
 }) {
@@ -19,8 +19,8 @@ export default function CropOverlay({
     if (rect) {
       const x = event.clientX - rect.left
       const y = event.clientY - rect.top
-      if (start) {
-        if (x > start.left && y > start.top) {
+      if (rectangle) {
+        if (x >= rectangle.left && x <= rectangle.left + rectangle.width && y >= rectangle.top && y <= rectangle.top + rectangle.height) {
           setStartPosition({ x, y })
           setCurrentPosition({ x, y })
         }
@@ -34,7 +34,9 @@ export default function CropOverlay({
       if (rect) {
         const x = event.clientX - rect.left
         const y = event.clientY - rect.top
-        setCurrentPosition({ x, y })
+        if (rectangle && x >= rectangle.left && x <= rectangle.left + rectangle.width && y >= rectangle.top && y <= rectangle.top + rectangle.height) {
+          setCurrentPosition({ x, y })
+        }
       }
     }
   }

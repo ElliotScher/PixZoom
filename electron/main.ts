@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, MenuItemConstructorOptions } from 'electron'
+import { app, BrowserWindow, dialog, Menu, MenuItemConstructorOptions, screen } from 'electron'
 import path from 'node:path'
 import fs from 'fs'
 
@@ -19,15 +19,30 @@ let win: BrowserWindow | null
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 
 function createWindow() {
+  const { width, height } = screen.getPrimaryDisplay().size;
+
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     },
-    fullscreen: false,
-    minWidth: 800,
-    minHeight: 600
-  })
+    show: false,
+    minWidth: width,
+    minHeight: height,
+    maximizable: false
+  });
+
+// Show the window only when it's ready to maximize
+win.once('ready-to-show', () => {
+  win?.show();
+  win?.maximize();
+});
+
+  // Handle maximize event
+  win.on('maximize', () => {
+    const { width, height } = win!.getBounds();
+    win!.setMinimumSize(width, height);
+  });
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
