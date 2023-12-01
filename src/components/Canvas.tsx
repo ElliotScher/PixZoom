@@ -1,49 +1,51 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import '@/css/Canvas.css'
 import CanvasImage from '@/classes/Image'
 import ImageProcessingTab from './ImageProcessingTab'
 
 export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | null }) {
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
   const [render, rerender] = useState(false)
   const [selectedFunction, setSelectedFunction] = useState('')
+  const [cropStart, setCropStart] = useState<{ x: number; y: number } | null>(null)
+  const [dashedRect, setDashedRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    function handleResize() {
-      setWindowWidth(window.innerWidth)
-    }
-
-    // Set up the event listener for window resize
-    window.addEventListener('resize', handleResize)
-
-    // Clean up event listener and cancel animation frame on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [primaryImage])
-
-  const containerStyle = {
-    width: `${windowWidth}px`
-  }
-
-  function handleMouseDown() {
-    switch (selectedFunction) {
-      case 'crop':
+  function handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
+    if (selectedFunction === 'crop') {
+      setCropStart({ x: e.clientX, y: e.clientY })
+      setDashedRect({ x: e.clientX, y: e.clientY, width: 1, height: 1 })
     }
   }
 
-  function handleMouseMove() {
-    switch (selectedFunction) {
-      case 'crop':
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (selectedFunction === 'crop') {
+      if (cropStart) {
+        const width = e.clientX - cropStart.x
+        const height = e.clientY - cropStart.y
+        if (dashedRect) {
+          setDashedRect({ x: cropStart.x, y: cropStart.y, width: width, height: height })
+        }
+      }
     }
   }
 
-  function handleMouseUp() {
-    switch (selectedFunction) {
-      case 'crop':
+  async function handleMouseUp() {
+    if (selectedFunction === 'crop') {
+      if (cropStart) {
+        const x = cropStart.x
+        const y = cropStart.y
+        const width = dashedRect?.width
+        const height = dashedRect?.height
 
+        if (width && height) {
+          await handleCrop({ x, y, width, height })
+          console.log(width)
+        }
+
+        setCropStart({ x: 0, y: 0 })
+        setDashedRect(null)
+      }
     }
   }
 
@@ -60,24 +62,20 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
     if (primaryImage) {
       if (func === 'crop') {
         setSelectedFunction('crop')
-      }
-      if (func === 'rotate') {
+      } else if (func === 'rotate') {
         console.log('put rotating logic here')
-      }
-      if (func === 'resize') {
+      } else if (func === 'resize') {
         console.log('put resizing logic here')
-      }
-      if (func === 'brightness') {
+      } else if (func === 'brightness') {
         console.log('put brightness logic here')
-      }
-      if (func === 'saturation') {
+      } else if (func === 'saturation') {
         console.log('put saturation logic here')
-      }
-      if (func === 'contrast') {
+      } else if (func === 'contrast') {
         console.log('put contrast logic here')
-      }
-      if (func === 'greyscale') {
+      } else if (func === 'greyscale') {
         console.log('put greyscale logic here')
+      } else {
+        setSelectedFunction('')
       }
     }
   }
@@ -87,18 +85,28 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
       <div
         ref={containerRef}
         className={'canvas-container'}
-        style={containerStyle}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       >
+        {dashedRect && (
+          <div
+            style={{
+              left: `${dashedRect.x}px`,
+              top: `${dashedRect.y}px`,
+              width: `${dashedRect.width}px`,
+              height: `${dashedRect.height}px`
+            }}
+            className={'dashed-rectangle'}
+          ></div>
+        )}
         <ImageProcessingTab onSelectFunction={handleProcessingFunction} />
         {primaryImage && (
           <img
             ref={imageRef}
             src={URL.createObjectURL(primaryImage.getTopLayer())}
             alt={`Edited: ${primaryImage.name}`}
-            className='canvas-image'
+            className={'canvas-image'}
           />
         )}
       </div>

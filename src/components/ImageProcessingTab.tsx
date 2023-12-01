@@ -9,7 +9,8 @@ export default function ImageProcessingTab({ onSelectFunction }: { onSelectFunct
 
   function handleFunctionClick(functionName: string) {
     if (selectedFunction === functionName) {
-      setSelectedFunction(null)
+      setSelectedFunction('')
+      onSelectFunction('')
     } else {
       setSelectedFunction(functionName)
       onSelectFunction(functionName)

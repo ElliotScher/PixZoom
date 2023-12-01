@@ -21,3 +21,8 @@
   margin-top: 10px;
   background-color: var(--button-color);
 }
+
+.canvas-container .dashed-rectangle {
+  position: absolute;
+  border: 2px dashed #ffffff;
+}
