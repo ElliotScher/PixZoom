@@ -20,6 +20,10 @@
   justify-content: center;
 }
 
+.image-processing-tab button.selected {
+  background-color: var(--accent);
+}
+
 .image-processing-tab button:hover {
   outline: none;
 }

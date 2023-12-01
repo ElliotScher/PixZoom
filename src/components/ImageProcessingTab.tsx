@@ -8,18 +8,26 @@ export default function ImageProcessingTab({ onSelectFunction }: { onSelectFunct
   const imageSize = 40
 
   function handleFunctionClick(functionName: string) {
-    setSelectedFunction(functionName)
-    onSelectFunction(functionName)
+    if (selectedFunction === functionName) {
+      setSelectedFunction(null)
+    } else {
+      setSelectedFunction(functionName)
+      onSelectFunction(functionName)
+    }
   }
 
   return (
     <div className='image-processing-tab'>
       <button
-        className={selectedFunction === 'crop' ? 'selected' : ''}
+        className={`image-processing-button ${selectedFunction === 'crop' ? 'selected' : 'image-processing-button.selected'}`}
         onClick={() => handleFunctionClick('crop')}
         style={{ width: `${buttonWidth}px`, height: `${buttonHeight}px` }}
       >
-        <img src='src\assets\crop.png' width={imageSize} height={imageSize} />
+        <img
+          src={selectedFunction === 'crop' ? 'src/assets/check-solid.svg' : 'src/assets/crop.png'}
+          width={imageSize}
+          height={imageSize}
+        />
       </button>
       <button
         className={selectedFunction === 'rotate' ? 'selected' : ''}

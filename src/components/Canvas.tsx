@@ -2,51 +2,25 @@ import { useEffect, useRef, useState } from 'react'
 import '@/css/Canvas.css'
 import CanvasImage from '@/classes/Image'
 import ImageProcessingTab from './ImageProcessingTab'
-import CropOverlay from './CropOverlay'
 
 export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | null }) {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth)
   const [render, rerender] = useState(false)
-  const [isCropping, setIsCropping] = useState(false)
-  const [rectangle, setRectangle] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
+  const [selectedFunction, setSelectedFunction] = useState('')
   const imageRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    let animationFrameId: number
-
-    function updateLayout() {
+    function handleResize() {
       setWindowWidth(window.innerWidth)
-
-      const containerElement = containerRef.current
-      const imageElement = imageRef.current
-
-      if (containerElement && imageElement) {
-        const containerRect = containerElement.getBoundingClientRect()
-        const imageRect = imageElement.getBoundingClientRect()
-
-        const top = imageRect.top - containerRect.top
-        const left = imageRect.left - containerRect.left
-        const width = imageRect.width
-        const height = imageRect.height
-
-        setRectangle({ top, left, width, height })
-      }
-
-      // Request the next animation frame for continuous updates
-      animationFrameId = window.requestAnimationFrame(updateLayout)
     }
 
-    // Initial layout update
-    updateLayout()
-
     // Set up the event listener for window resize
-    window.addEventListener('resize', updateLayout)
+    window.addEventListener('resize', handleResize)
 
     // Clean up event listener and cancel animation frame on component unmount
     return () => {
-      window.removeEventListener('resize', updateLayout)
-      window.cancelAnimationFrame(animationFrameId)
+      window.removeEventListener('resize', handleResize)
     }
   }, [primaryImage])
 
@@ -54,7 +28,27 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
     width: `${windowWidth}px`
   }
 
+  function handleMouseDown() {
+    switch (selectedFunction) {
+      case 'crop':
+    }
+  }
+
+  function handleMouseMove() {
+    switch (selectedFunction) {
+      case 'crop':
+    }
+  }
+
+  function handleMouseUp() {
+    switch (selectedFunction) {
+      case 'crop':
+
+    }
+  }
+
   async function handleCrop(cropDimensions: { x: number; y: number; width: number; height: number }) {
+    console.clear()
     if (primaryImage) {
       const croppedFile = await cropImage(primaryImage.getTopLayer(), cropDimensions)
       primaryImage.addLayer(croppedFile)
@@ -65,7 +59,7 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
   function handleProcessingFunction(func: string | null) {
     if (primaryImage) {
       if (func === 'crop') {
-        setIsCropping(true)
+        setSelectedFunction('crop')
       }
       if (func === 'rotate') {
         console.log('put rotating logic here')
@@ -90,7 +84,14 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
 
   return (
     <>
-      <div ref={containerRef} className={'canvas-container'} style={containerStyle}>
+      <div
+        ref={containerRef}
+        className={'canvas-container'}
+        style={containerStyle}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+      >
         <ImageProcessingTab onSelectFunction={handleProcessingFunction} />
         {primaryImage && (
           <img
@@ -98,33 +99,6 @@ export default function Canvas({ primaryImage }: { primaryImage: CanvasImage | n
             src={URL.createObjectURL(primaryImage.getTopLayer())}
             alt={`Edited: ${primaryImage.name}`}
             className='canvas-image'
-          />
-        )}
-        {isCropping && primaryImage && <CropOverlay rectangle={rectangle} onCrop={handleCrop} onRemove={() => setIsCropping(false)} />}
-        {rectangle && (
-          <div
-            style={{
-              position: 'absolute',
-              top: rectangle.top,
-              left: rectangle.left,
-              width: '10px',
-              height: '10px',
-              background: 'red',
-              borderRadius: '50%'
-            }}
-          />
-        )}
-        {rectangle && (
-          <div
-            style={{
-              position: 'absolute',
-              top: rectangle.top + rectangle.height,
-              left: rectangle.left + rectangle.width,
-              width: '10px',
-              height: '10px',
-              background: 'green',
-              borderRadius: '50%'
-            }}
           />
         )}
       </div>
@@ -145,7 +119,6 @@ export async function cropImage(image: File, cropDimensions: { x: number; y: num
       const { x, y, width, height } = cropDimensions
       canvas.width = width
       canvas.height = height
-      console.log(cropDimensions)
       ctx.drawImage(img, x, y, width, height, 0, 0, width, height)
 
       canvas.toBlob((blob) => {

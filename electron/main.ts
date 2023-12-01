@@ -19,7 +19,7 @@ let win: BrowserWindow | null
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 
 function createWindow() {
-  const { width, height } = screen.getPrimaryDisplay().size;
+  const { width, height } = screen.getPrimaryDisplay().size
 
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
@@ -30,19 +30,19 @@ function createWindow() {
     minWidth: width,
     minHeight: height,
     maximizable: false
-  });
+  })
 
-// Show the window only when it's ready to maximize
-win.once('ready-to-show', () => {
-  win?.show();
-  win?.maximize();
-});
+  // Show the window only when it's ready to maximize
+  win.once('ready-to-show', () => {
+    win?.show()
+    win?.maximize()
+  })
 
   // Handle maximize event
   win.on('maximize', () => {
-    const { width, height } = win!.getBounds();
-    win!.setMinimumSize(width, height);
-  });
+    const { width, height } = win!.getBounds()
+    win!.setMinimumSize(width, height)
+  })
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
